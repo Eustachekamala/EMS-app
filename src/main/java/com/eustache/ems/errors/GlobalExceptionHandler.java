@@ -14,8 +14,8 @@ import java.util.HashMap;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ApiError> handleEmployeeNotFound(NotFoundException ex) {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiError> handleEmployeeNotFound(ResourceNotFoundException ex) {
         ApiError apiError = new ApiError(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),

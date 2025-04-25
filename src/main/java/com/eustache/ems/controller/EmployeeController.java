@@ -1,52 +1,61 @@
 package com.eustache.ems.controller;
 
+import com.eustache.ems.dto.EmployeeDTO;
 import com.eustache.ems.dto.EmployeeResponseDTO;
-import com.eustache.ems.models.Employee;
-import com.eustache.ems.services.EmployeeService;
+import com.eustache.ems.services.impl.EmployeeService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
 
+@AllArgsConstructor
 @RestController
+@RequestMapping("/api/employees")
 public class EmployeeController {
     private final EmployeeService employeeService;
 
-    public EmployeeController(EmployeeService employeeService) {
-        this.employeeService = employeeService;
+    //Add Employee REST API
+    @PostMapping
+    public ResponseEntity<EmployeeResponseDTO> createEmployee(
+            @Valid @RequestBody EmployeeDTO employeeDTO
+    ) {
+        EmployeeResponseDTO savedEmployee = employeeService.createEmployee(employeeDTO);
+        return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
+    }
+    
+    //Get all Employees
+    @GetMapping
+    public ResponseEntity<List<EmployeeResponseDTO>> getEmployees() {
+        return ResponseEntity.ok(employeeService.getAllEmployees());
     }
 
-    @GetMapping("/")
-    public String index(){
-        return "Welcome to the Employee Management System";
+    //Get by ID
+    @GetMapping("{id}")
+    public ResponseEntity<EmployeeResponseDTO> getEmployeeByBid(
+            @PathVariable Integer id
+    ){
+        return ResponseEntity.ok(employeeService.getEmployeeById(id));
     }
 
-    @PostMapping("/employee")
-    public Employee addEmployee(@Valid @RequestBody Employee employee) {
-        return employeeService.creteEmployee(employee);
+    //Update Employee
+    @PutMapping("{id}")
+    public ResponseEntity<EmployeeResponseDTO> updateEmployee(
+            @PathVariable Integer id,
+            @Valid @RequestBody  EmployeeDTO employeeDTO
+    ){
+        EmployeeResponseDTO savedEmployee = employeeService.updateEmployee(id, employeeDTO);
+        return ResponseEntity.ok(savedEmployee);
     }
 
-    @GetMapping("/employee")
-    public List<EmployeeResponseDTO> getAllEmployees() {
-        return employeeService.findAll();
-    }
-
-    @GetMapping("/employee/{id}")
-    public Employee getEmployee(@PathVariable Integer id) {
-        return employeeService.findById(id);
-    }
-
-    @PutMapping("/employee/{id}")
-    public EmployeeResponseDTO updateEmployee(@PathVariable Integer id, @RequestBody Employee employee) {
-        return employeeService.update(id, employee);
-    }
-
-    @DeleteMapping("/employee/{id}")
-    public void deleteEmployee(@PathVariable Integer id) {
+    //Delete Employee
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteEmployee(
+            @PathVariable Integer id
+    ){
         employeeService.deleteEmployee(id);
+        return ResponseEntity.ok("Employee deleted Successfully");
     }
 }
