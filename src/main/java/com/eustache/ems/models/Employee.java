@@ -11,7 +11,7 @@ import lombok.*;
 @Table(name = "employees")
 public class Employee {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(nullable = false)
     private String firstname;
