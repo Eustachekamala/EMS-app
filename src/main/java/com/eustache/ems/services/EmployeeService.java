@@ -1,6 +1,7 @@
 package com.eustache.ems.services;
 
 import com.eustache.ems.dto.EmployeeResponseDTO;
+import com.eustache.ems.errors.NotFoundException;
 import com.eustache.ems.mapper.EmployeeMapper;
 import com.eustache.ems.models.Employee;
 import com.eustache.ems.repositories.EmployeeRepository;
@@ -32,7 +33,7 @@ public class EmployeeService {
     //Get by ID
     public Employee findById(Integer id) {
         return employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
+                .orElseThrow(() -> new NotFoundException("Employee not found with id: " + id));
     }
 
     //To create an Employee
